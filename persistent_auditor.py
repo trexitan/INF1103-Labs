@@ -1,7 +1,7 @@
 # lab 4 
 def load_inventory():
     try:
-        with open("orders.txt", "r") as file:
+        with open("inventory.txt", "r") as file:
             orders = file.readlines()
             return orders
         
@@ -9,7 +9,7 @@ def load_inventory():
         return []
     
 def save_inventory(orders):
-    with open("orders.txt", "w") as file:
+    with open("inventory.txt", "w") as file:
         for order in orders:
             file.write(order.strip() + "\n")
 
@@ -44,7 +44,7 @@ while True:
 
 save_inventory(orders)
 
-print("Order successfully saved to orders.txt")
+print("Order successfully saved to inventory.txt")
 
 
 
