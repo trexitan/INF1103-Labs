@@ -7,7 +7,11 @@ def load_inventory():
         
     except FileNotFoundError:
         return []
-
+    
+def save_inventory(orders):
+    with open("orders.txt", "w") as file:
+        for order in orders:
+            file.write(order.strip() + "\n")
 
 orders = load_inventory()
 
@@ -18,21 +22,29 @@ for order in orders:
     print(order.strip())
 print()
 
-product_name = input("Enter Product name: ")
-quantity = input("Enter Quantity: ")
+while True:
+    product_name = input("Enter Product name: ")
+    if product_name.lower() == "quit":
+        break   
+    quantity = input("Enter Quantity: ")
 
-if len(orders) == 0:
-    order_id = 1001
-else:
-    last_order = orders[-1]
-    order_parts = last_order.split(",")
-    order_id = int(order_parts[0]) + 1
+    if len(orders) == 0:
+        order_id = 1001
+    else:
+        last_order = orders[-1]
+        order_parts = last_order.split(",")
+        order_id = int(order_parts[0]) + 1
 
-new_order = f"{order_id},{product_name},{quantity}"
-orders.append(new_order)
-print()
-print("New Order Added:")
-print(new_order)
+    new_order = f"{order_id},{product_name},{quantity}"
+    orders.append(new_order)
+    print()
+    print("New Order Added:")
+    print(new_order)
+    print()
+
+save_inventory(orders)
+
+print("Order successfully saved to orders.txt")
 
 
 
