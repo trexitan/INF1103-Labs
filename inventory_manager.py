@@ -20,6 +20,12 @@ def load_inventory():
     else:
         print(f"{FILENAME} not found. Starting with an empty inventory.")
         return []
+
+ 
+def save_inventory(inventory):
+    """Save the inventory list to inventory.json."""
+    with open(FILENAME, "w") as file:
+        json.dump(inventory, file, indent=4)
  
 
 def search_product(inventory, product_id):
@@ -62,7 +68,115 @@ def display_all(inventory):
               f"Price: ${product['price']:.2f} | Stock: {product['stock']}")
     print("-" * 48)
 
-inventory = load_inventory()
-display_all(inventory)
+def get_float(prompt):
+    while True:
+        try:
+            value = float(input(prompt))
+            if value >= 0:
+                return value
+            print("Value cannot be negative.")
+        except ValueError:
+            print("Please enter a valid number.")
+ 
+ 
+def get_int(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            if value >= 0:
+                return value
+            print("Value cannot be negative.")
+        except ValueError:
+            print("Please enter a whole number.")
+ 
+ 
+# ---------- Menu System ----------
+def show_menu():
+    print("----------- MENU -----------")
+    print("1. Display All Products")
+    print("2. Add Product")
+    print("3. Update Stock")
+    print("4. Search Product")
+    print("5. Save Inventory")
+    print("6. Exit")
+    print("----------------------------")
+ 
+ 
+def main():
+    print("=" * 40)
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("=" * 40)
+ 
+    inventory = load_inventory()
+    show_menu()
+ 
+    while True:
+        option = input("Enter option: ").strip()
+ 
+        if option == "1":
+            display_all(inventory)
+ 
+        elif option == "2":
+            print("Add New Product")
+            product_id = input("Product ID: ").strip()
+            if search_product(inventory, product_id) is not None:
+                print("Product ID already exists.")
+            else:
+                name = input("Product Name: ").strip()
+                price = get_float("Price: ")
+                stock = get_int("Stock Quantity: ")
+                add_product(inventory, product_id, name, price, stock)
+                print("Product added successfully!")
+ 
+        elif option == "3":
+            print("Update Stock")
+            product_id = input("Enter Product ID: ").strip()
+            product = search_product(inventory, product_id)
+            if product is None:
+                print("Product not found.")
+            else:
+                print("Product Found:")
+                print(f"Name: {product['name']}")
+                print(f"Current Stock: {product['stock']}")
+                new_stock = get_int("New Stock Quantity: ")
+                update_stock(inventory, product_id, new_stock)
+                print("Stock updated successfully!")
+ 
+        elif option == "4":
+            print("Search Product")
+            product_id = input("Enter Product ID: ").strip()
+            product = search_product(inventory, product_id)
+            if product is None:
+                print("Product not found.")
+            else:
+                print("Product Found")
+                print("-" * 48)
+                print(f"ID: {product['id']}")
+                print(f"Name: {product['name']}")
+                print(f"Price: ${product['price']:.2f}")
+                print(f"Stock: {product['stock']}")
+                print("-" * 48)
+ 
+        elif option == "5":
+            print("Saving inventory...")
+            save_inventory(inventory)
+            print(f"Inventory saved successfully to {FILENAME}.")
+ 
+        elif option == "6":
+            print("Saving inventory before exit...")
+            save_inventory(inventory)
+            print("Inventory saved successfully.")
+            print("Thank you for using Inventory Management System.")
+            print("Program terminated.")
+            break
+ 
+        else:
+            print("Invalid option. Please enter 1-6.")
+ 
+        print()
+ 
+ 
+if __name__ == "__main__":
+    main()
 
 
