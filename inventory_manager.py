@@ -1,12 +1,14 @@
-#lab 7
+#lab 8
 
 import json
 import os
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
+from supplier import Supplier
 
 FILENAME = "inventory.json"
+DEFAULT_SUPPLIER = Supplier("S001", "TechWorld Pte Ltd", "sales@techworld.com")
 
 def load_inventory():
     inventory = Inventory()
@@ -18,9 +20,9 @@ def load_inventory():
             data = json.load(file)
         for item in data:
             if item["type"] == "physical":
-                product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"])
+                product = PhysicalProduct(item["id"], item["name"], item["price"], item["stock"], item["weight"], DEFAULT_SUPPLIER)
             else:
-                product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"])
+                product = DigitalProduct(item["id"], item["name"], item["price"], item["stock"], item["download_size"], DEFAULT_SUPPLIER)
             inventory.add_product(product)
         print("Inventory loaded successfully.")
     except json.JSONDecodeError:
@@ -87,7 +89,7 @@ def main():
         elif option == "2":
             print("Add New Product")
             product_id = input("Product ID: ").strip()
-            if inventory.search_product(product_id) is not None:
+            if inventory.find_product(product_id) is not None:
                 print("Product ID already exists.")
             else:
                 product_type = input("Type (physical/digital): ").strip().lower()
@@ -99,17 +101,17 @@ def main():
                 stock = get_int("Stock Quantity: ")
                 if product_type == "physical":
                     weight = get_float("Weight (kg): ")
-                    new_product = PhysicalProduct(product_id, name, price, stock, weight)
+                    new_product = PhysicalProduct(product_id, name, price, stock, weight, DEFAULT_SUPPLIER)
                 else:
                     download_size = get_float("Download Size (MB): ")
-                    new_product = DigitalProduct(product_id, name, price, stock, download_size)
+                    new_product = DigitalProduct(product_id, name, price, stock, download_size, DEFAULT_SUPPLIER)
                 inventory.add_product(new_product)
                 print("Product added successfully!")
  
         elif option == "3":
             print("Update Stock")
             product_id = input("Enter Product ID: ").strip()
-            product = inventory.search_product(product_id)
+            product = inventory.find_product(product_id)
             if product is None:
                 print("Product not found.")
             else:
@@ -123,7 +125,7 @@ def main():
         elif option == "4":
             print("Search Product")
             product_id = input("Enter Product ID: ").strip()
-            product = inventory.search_product(product_id)
+            product = inventory.find_product(product_id)
             if product is None:
                 print("Product not found.")
             else:
@@ -156,5 +158,3 @@ def main():
  
 if __name__ == "__main__":
     main()
-
-
