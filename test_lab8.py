@@ -3,6 +3,7 @@ from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
 from order import Order
+from product import Product
 
 print("=== Test 1: Association (Supplier - Product) ===")
 supplier = Supplier("S001", "TechWorld Pte Ltd", "sales@techworld.com")
@@ -56,3 +57,29 @@ print("Same Product object?  ", line_in_order1.get_product() is line_in_order2.g
 print("\nRemoving the keyboard line from Order 1:")
 order1.remove_order_line("P030")
 order1.display_order()
+
+print("\n=== Test 4: LSP and Polymorphism ===")
+
+def show_product_details(product: Product) -> None:
+    product.display_information()
+    print(product.get_fulfilment_info())
+
+guitar = PhysicalProduct("P040", "Guitar", 350.0, 5, 4.2, supplier2)
+software = DigitalProduct("P041", "Antivirus", 49.9, 100, 850.0, supplier2)
+
+print("-- Same function, two product types --")
+show_product_details(guitar)
+show_product_details(software)
+
+print("\n-- One inventory, one loop, no type checks --")
+shop = Inventory()
+shop.add_product(guitar)
+shop.add_product(software)
+for product in shop.get_products():
+    product.display_information()
+    print(product.get_fulfilment_info())
+
+print("\n-- Both types support update_stock --")
+shop.update_stock("P040", 3)
+shop.update_stock("P041", 80)
+shop.display_all()
